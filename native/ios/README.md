@@ -27,3 +27,6 @@ Without it, Sentry is never started and nothing is sent.
 
 ## Test identifiers
 Same as the RN app (see `AGENTS.md`), exposed as `accessibilityIdentifier`. Tab identifiers are set on the tab item labels.
+
+## ChatterCore (non-UI core)
+`ChatterCore/` is a local Swift Package: chat logic (`Chats.swift`, port of `src/lib/chats.ts`), seed data, and `AppStore` (`@Observable`, persists JSON under `chatter:v1` in UserDefaults with the same shape as the RN app). Storage, scheduler and clock are injected. Run its tests anywhere with a Swift 5.9+ toolchain: `cd native/ios/ChatterCore && swift test`.

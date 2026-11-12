@@ -15,6 +15,8 @@ packages:
   Sentry:
     url: https://github.com/getsentry/sentry-cocoa
     from: 8.40.0
+  ChatterCore:
+    path: ChatterCore
 targets:
   Chatter:
     type: application
@@ -24,6 +26,8 @@ targets:
     dependencies:
       - package: Sentry
         product: Sentry
+      - package: ChatterCore
+        product: ChatterCore
     settings:
       base:
         PRODUCT_BUNDLE_IDENTIFIER: dev.softwarefactory.chatter
