@@ -1,0 +1,13 @@
+appId: dev.softwarefactory.chatter
+---
+- launchApp
+- tapOn:
+    id: chat-row-asha
+- assertVisible:
+    id: chat-subtitle
+- tapOn:
+    id: message-input
+- inputText: Looks good, approving now
+- tapOn:
+    id: send
+- assertVisible: Looks good, approving now
