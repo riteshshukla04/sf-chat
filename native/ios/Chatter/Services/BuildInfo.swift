@@ -15,4 +15,13 @@ struct BuildInfo: Equatable {
     var dist: String { updateLabel }
 
     static let current = BuildInfo()
+
+    /// What's new in this build: the `ReleaseNote` Info.plist key, fed by the RELEASE_NOTE build
+    /// setting (set it from EXPO_PUBLIC_RELEASE_NOTE). Nil when empty or unset.
+    static var releaseNote: String? { releaseNote(from: Bundle.main.object(forInfoDictionaryKey: "ReleaseNote") as? String) }
+
+    static func releaseNote(from value: String?) -> String? {
+        guard let value, !value.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty, !value.hasPrefix("$(") else { return nil }
+        return value
+    }
 }

@@ -46,6 +46,9 @@ targets:
         UISupportedInterfaceOrientations: [UIInterfaceOrientationPortrait]
         # Empty unless SENTRY_DSN is provided at build time.
         SentryDSN: $(SENTRY_DSN)
+        # Release note under the title; empty unless RELEASE_NOTE is set at build time
+        # (e.g. RELEASE_NOTE="$EXPO_PUBLIC_RELEASE_NOTE" xcodebuild ...).
+        ReleaseNote: $(RELEASE_NOTE)
   ChatterTests:
     type: bundle.unit-test
     platform: iOS
@@ -53,6 +56,8 @@ targets:
       - path: ChatterTests
     dependencies:
       - target: Chatter
+      - package: ChatterCore
+        product: ChatterCore
     settings:
       base:
         PRODUCT_BUNDLE_IDENTIFIER: dev.softwarefactory.chatter.tests

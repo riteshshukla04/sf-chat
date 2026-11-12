@@ -30,3 +30,6 @@ Same as the RN app (see `AGENTS.md`), exposed as `accessibilityIdentifier`. Tab 
 
 ## ChatterCore (non-UI core)
 `ChatterCore/` is a local Swift Package: chat logic (`Chats.swift`, port of `src/lib/chats.ts`), seed data, and `AppStore` (`@Observable`, persists JSON under `chatter:v1` in UserDefaults with the same shape as the RN app). Storage, scheduler and clock are injected. Run its tests anywhere with a Swift 5.9+ toolchain: `cd native/ios/ChatterCore && swift test`.
+
+## Release note
+`ReleaseNote` in Info.plist comes from the `RELEASE_NOTE` build setting; pass `RELEASE_NOTE="$EXPO_PUBLIC_RELEASE_NOTE"` to xcodebuild to show it under the title (identifier `release-note`).
