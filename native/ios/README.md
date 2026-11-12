@@ -4,7 +4,7 @@ Native iOS port of the React Native app. iOS 17+, bundle id `dev.softwarefactory
 No server: no network calls except optional Sentry crash reporting.
 
 ## Layout
-- `project.yml` – XcodeGen spec (app target `Chatter`, unit tests `ChatterTests`, scheme `Chatter`). The `.xcodeproj` and `Info.plist` are generated and git-ignored.
+- `project.yml` – XcodeGen spec (app target `Chatter`, unit tests `ChatterTests`, UI tests `ChatterUITests`, scheme `Chatter`). The `.xcodeproj` and `Info.plist` are generated and git-ignored.
 - `Chatter/Theme.swift` – palette + spacing mirroring `src/constants/theme.ts`.
 - `Chatter/RootView.swift` – tabs, `NavigationStack` (chat), "New chat" sheet. Do not edit from screen tasks.
 - `Chatter/Screens/*` – one stub per screen; screen tasks replace only their own file.

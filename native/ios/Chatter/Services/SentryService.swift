@@ -45,4 +45,15 @@ enum SentryService {
         if started { SentrySDK.capture(error: error) }
         #endif
     }
+
+    /// Leaves a breadcrumb for later crash reports. No-op unless Sentry was started.
+    static func addBreadcrumb(_ message: String, data: [String: Any] = [:]) {
+        #if canImport(Sentry)
+        guard started else { return }
+        let crumb = Breadcrumb(level: .info, category: "app")
+        crumb.message = message
+        crumb.data = data
+        SentrySDK.addBreadcrumb(crumb)
+        #endif
+    }
 }

@@ -57,15 +57,28 @@ targets:
       base:
         PRODUCT_BUNDLE_IDENTIFIER: dev.softwarefactory.chatter.tests
         GENERATE_INFOPLIST_FILE: YES
+  ChatterUITests:
+    type: bundle.ui-testing
+    platform: iOS
+    sources:
+      - path: ChatterUITests
+    dependencies:
+      - target: Chatter
+    settings:
+      base:
+        PRODUCT_BUNDLE_IDENTIFIER: dev.softwarefactory.chatter.uitests
+        GENERATE_INFOPLIST_FILE: YES
 schemes:
   Chatter:
     build:
       targets:
         Chatter: all
         ChatterTests: [test]
+        ChatterUITests: [test]
     run:
       config: Debug
     test:
       config: Debug
       targets:
         - ChatterTests
+        - ChatterUITests
