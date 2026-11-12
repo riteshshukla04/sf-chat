@@ -81,6 +81,10 @@ describe('a conversation', () => {
     const group = chat('g', { kind: 'group', title: 'Flat 4B', members: ['asha', 'ben'], messages: [msg('1', 'asha', 'Rent paid', at(12, 10, 15))] });
     expect(headerSubtitle(group, contacts, NOW)).toBe('Asha, Ben, You · last message 10:15');
   });
+  test('a group with no messages yet still has a subtitle', () => {
+    const group = chat('g', { kind: 'group', title: 'Weekend trip', members: ['asha', 'ben'], messages: [] });
+    expect(headerSubtitle(group, contacts, NOW)).toBe('Asha, Ben, You');
+  });
   test('sending: only real text, and the chat counts as read', () => {
     expect(canSend('   ')).toBe(false);
     expect(canSend(' hi ')).toBe(true);
