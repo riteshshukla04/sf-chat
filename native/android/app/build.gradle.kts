@@ -11,6 +11,9 @@ val sentryDsn: String = System.getenv("EXPO_PUBLIC_SENTRY_DSN")?.takeIf { it.isN
     ?: System.getenv("SENTRY_DSN")?.takeIf { it.isNotBlank() }
     ?: ""
 
+// Optional "what's new" line on the Chats screen, same env var as the RN app (EXPO_PUBLIC_RELEASE_NOTE).
+val releaseNote: String = System.getenv("EXPO_PUBLIC_RELEASE_NOTE")?.takeIf { it.isNotBlank() } ?: ""
+
 android {
     namespace = "dev.softwarefactory.chatter"
     compileSdk = 35
@@ -21,6 +24,7 @@ android {
         targetSdk = 35
         versionCode = 1
         versionName = "1.0.0" // keep in sync with app.config.ts
+        buildConfigField("String", "RELEASE_NOTE", "\"${releaseNote.replace("\\", "\\\\").replace("\"", "\\\"")}\"")
         buildConfigField("String", "SENTRY_DSN", "\"${sentryDsn.replace("\\", "\\\\").replace("\"", "\\\"")}\"")
     }
 
