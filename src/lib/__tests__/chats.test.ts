@@ -9,9 +9,12 @@ import {
   groupByDay,
   headerSubtitle,
   initials,
+  type Message,
   previewText,
   searchChats,
   sortChats,
+  reactionSummary,
+  toggleReaction,
   totalUnread,
   withMessage,
 } from '../chats';
@@ -103,5 +106,33 @@ describe('a conversation', () => {
     expect(initials('Asha Rao')).toBe('AR');
     expect(initials('Weekend trip ⛺')).toBe('WT');
     expect(initials('')).toBe('?');
+  });
+});
+
+describe('reactions', () => {
+  const base: Message = msg('m1', 'asha', 'hi', at(12, 9));
+  test('adds a reaction and summarises it', () => {
+    const m = toggleReaction(base, '❤️');
+    expect(reactionSummary(m)).toEqual([{ emoji: '❤️', count: 1, mine: true }]);
+  });
+  test('tapping my own reaction again removes it', () => {
+    const m = toggleReaction(toggleReaction(base, '👍'), '👍');
+    expect(m.reactions).toBeUndefined();
+    expect(reactionSummary(m)).toEqual([]);
+  });
+  test('a different emoji replaces mine; others are counted', () => {
+    let m = toggleReaction(base, '👍', 'asha');
+    m = toggleReaction(m, '👍');
+    expect(reactionSummary(m)).toEqual([{ emoji: '👍', count: 2, mine: true }]);
+    m = toggleReaction(m, '🙏');
+    expect(reactionSummary(m)).toEqual([
+      { emoji: '👍', count: 1, mine: false },
+      { emoji: '🙏', count: 1, mine: true },
+    ]);
+  });
+  test('ignores emojis outside the picker and does not mutate', () => {
+    expect(toggleReaction(base, '🔥')).toBe(base);
+    toggleReaction(base, '👍');
+    expect(base.reactions).toBeUndefined();
   });
 });

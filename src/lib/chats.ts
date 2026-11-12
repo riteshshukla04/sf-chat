@@ -13,7 +13,11 @@ export interface Message {
   /** Epoch milliseconds. */
   sentAt: number;
   status: MessageStatus;
+  /** Who reacted with which emoji: emoji → ids of the people ("me" or contact ids). Absent on old messages. */
+  reactions?: Record<string, string[]>;
 }
+
+export const REACTION_EMOJIS = ['👍', '❤️', '😂', '😮', '😢', '🙏'] as const;
 
 export interface Contact {
   id: string;
@@ -158,4 +162,31 @@ export function initials(name: string): string {
     .slice(0, 2)
     .map((part) => part[0]!.toUpperCase());
   return letters.join('') || '?';
+}
+
+/**
+ * Toggles a person's reaction on a message. Reacting with the emoji they already used removes it;
+ * a different emoji replaces their earlier one (one reaction per person). Unknown emojis are ignored.
+ */
+export function toggleReaction(message: Message, emoji: string, by = 'me'): Message {
+  if (!(REACTION_EMOJIS as readonly string[]).includes(emoji)) return message;
+  const next: Record<string, string[]> = {};
+  const had = message.reactions?.[emoji]?.includes(by) ?? false;
+  for (const [e, people] of Object.entries(message.reactions ?? {})) {
+    const rest = people.filter((p) => p !== by);
+    if (rest.length) next[e] = rest;
+  }
+  if (!had) next[emoji] = [...(next[emoji] ?? []), by];
+  const { reactions: _old, ...base } = message;
+  return Object.keys(next).length ? { ...base, reactions: next } : base;
+}
+
+/** Reactions as pills, in the picker's order: emoji, count, and whether I used it. */
+export function reactionSummary(message: Message): Array<{ emoji: string; count: number; mine: boolean }> {
+  const out: Array<{ emoji: string; count: number; mine: boolean }> = [];
+  for (const emoji of REACTION_EMOJIS) {
+    const people = message.reactions?.[emoji];
+    if (people?.length) out.push({ emoji, count: people.length, mine: people.includes('me') });
+  }
+  return out;
 }

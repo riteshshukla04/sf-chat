@@ -6,9 +6,9 @@ import { SafeAreaView } from 'react-native-safe-area-context';
 
 import { Avatar } from '@/components/avatar';
 import { Spacing, useColors } from '@/constants/theme';
-import { canSend, firstName, formatClock, groupByDay, headerSubtitle, type Message } from '@/lib/chats';
+import { canSend, firstName, formatClock, groupByDay, headerSubtitle, type Message, REACTION_EMOJIS, reactionSummary } from '@/lib/chats';
 import { addBreadcrumb } from '@/services/sentry';
-import { markRead, sendMessage, useAppState } from '@/state/store';
+import { markRead, reactToMessage, sendMessage, useAppState } from '@/state/store';
 
 type Row = { kind: 'day'; key: string; day: string } | { kind: 'message'; key: string; message: Message };
 
@@ -18,6 +18,7 @@ export default function ChatScreen() {
   const chat = useAppState((s) => s.chats.find((x) => x.id === id));
   const contacts = useAppState((s) => s.contacts);
   const [draft, setDraft] = useState('');
+  const [picking, setPicking] = useState<string | null>(null); // id of the message whose picker is open
 
   useEffect(() => {
     addBreadcrumb('open chat', { chat: id });
@@ -59,8 +60,31 @@ export default function ChatScreen() {
     }
     const m = item.message;
     const mine = m.from === 'me';
+    const pills = reactionSummary(m);
     return (
-      <View testID={`message-${m.id}`} style={[styles.bubble, mine ? styles.mine : styles.theirs, { backgroundColor: mine ? c.bubbleMine : c.bubbleTheirs }]}>
+      <View style={[styles.item, mine ? styles.mine : styles.theirs]}>
+      {picking === m.id ? (
+        <View testID="reaction-picker" style={[styles.picker, { backgroundColor: c.surface }]}>
+          {REACTION_EMOJIS.map((emoji) => (
+            <Pressable
+              key={emoji}
+              testID={`pick-${emoji}`}
+              accessibilityLabel={`React ${emoji}`}
+              onPress={() => {
+                reactToMessage(chat.id, m.id, emoji);
+                setPicking(null);
+              }}
+              style={styles.pickEmoji}>
+              <Text style={styles.pickText}>{emoji}</Text>
+            </Pressable>
+          ))}
+        </View>
+      ) : null}
+      <Pressable
+        testID={`message-${m.id}`}
+        delayLongPress={350}
+        onLongPress={() => setPicking(picking === m.id ? null : m.id)}
+        style={[styles.bubble, { backgroundColor: mine ? c.bubbleMine : c.bubbleTheirs }]}>
         {chat.kind === 'group' && !mine ? <Text style={[styles.sender, { color: c.accent }]}>{firstName(contacts[m.from]?.name ?? 'Someone')}</Text> : null}
         <Text style={[styles.text, { color: c.text }]}>{m.text}</Text>
         <View style={styles.meta}>
@@ -74,6 +98,23 @@ export default function ChatScreen() {
             />
           ) : null}
         </View>
+      </Pressable>
+      {pills.length ? (
+        <View style={styles.pills}>
+          {pills.map((p) => (
+            <Pressable
+              key={p.emoji}
+              testID={`reaction-${m.id}-${p.emoji}`}
+              onPress={() => reactToMessage(chat.id, m.id, p.emoji)}
+              style={[styles.pill, { backgroundColor: p.mine ? c.bubbleMine : c.surface, borderColor: p.mine ? c.accent : c.surfaceAlt }]}>
+              <Text style={styles.pillText}>
+                {p.emoji}
+                {p.count > 1 ? ` ${p.count}` : ''}
+              </Text>
+            </Pressable>
+          ))}
+        </View>
+      ) : null}
       </View>
     );
   };
@@ -103,6 +144,7 @@ export default function ChatScreen() {
           data={rows}
           keyExtractor={(row) => row.key}
           renderItem={renderRow}
+          extraData={picking}
           contentContainerStyle={styles.list}
           ListFooterComponent={
             chat.messages.length === 0 ? (
@@ -140,7 +182,14 @@ const styles = StyleSheet.create({
   list: { padding: Spacing.md, gap: 6 },
   day: { alignSelf: 'center', borderRadius: 8, paddingHorizontal: Spacing.md, paddingVertical: 4, marginVertical: Spacing.sm },
   dayText: { fontSize: 12, fontWeight: '600' },
-  bubble: { maxWidth: '82%', borderRadius: 12, paddingHorizontal: Spacing.md, paddingTop: 6, paddingBottom: 4 },
+  item: { maxWidth: '82%' },
+  picker: { flexDirection: 'row', borderRadius: 22, paddingHorizontal: 6, marginBottom: 4, elevation: 3 },
+  pickEmoji: { padding: 6 },
+  pickText: { fontSize: 24 },
+  pills: { flexDirection: 'row', gap: 4, marginTop: -6, marginHorizontal: 6 },
+  pill: { borderRadius: 12, borderWidth: 1, paddingHorizontal: 7, paddingVertical: 2 },
+  pillText: { fontSize: 13 },
+  bubble: { alignSelf: 'stretch', borderRadius: 12, paddingHorizontal: Spacing.md, paddingTop: 6, paddingBottom: 4 },
   mine: { alignSelf: 'flex-end', borderTopRightRadius: 2 },
   theirs: { alignSelf: 'flex-start', borderTopLeftRadius: 2 },
   sender: { fontSize: 13, fontWeight: '700', marginBottom: 2 },
