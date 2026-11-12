@@ -6,6 +6,7 @@ import { SafeAreaView } from 'react-native-safe-area-context';
 
 import { Avatar } from '@/components/avatar';
 import { Spacing, useColors } from '@/constants/theme';
+import { useNow } from '@/hooks/use-now';
 import { canSend, firstName, formatClock, groupByDay, headerSubtitle, type Message, REACTION_EMOJIS, reactionSummary } from '@/lib/chats';
 import { addBreadcrumb } from '@/services/sentry';
 import { markRead, reactToMessage, sendMessage, useAppState } from '@/state/store';
@@ -18,6 +19,7 @@ export default function ChatScreen() {
   const chat = useAppState((s) => s.chats.find((x) => x.id === id));
   const contacts = useAppState((s) => s.contacts);
   const [draft, setDraft] = useState('');
+  const now = useNow();
   const [picking, setPicking] = useState<string | null>(null); // id of the message whose picker is open
 
   useEffect(() => {
@@ -28,12 +30,12 @@ export default function ChatScreen() {
   const rows = useMemo<Row[]>(() => {
     if (!chat) return [];
     const out: Row[] = [];
-    for (const group of groupByDay(chat.messages, Date.now())) {
+    for (const group of groupByDay(chat.messages, now)) {
       out.push({ kind: 'day', key: `day-${group.day}`, day: group.day });
       for (const message of group.messages) out.push({ kind: 'message', key: message.id, message });
     }
     return out.reverse(); // the list is inverted: newest at the bottom
-  }, [chat]);
+  }, [chat, now]);
 
   if (!chat) {
     return (
@@ -43,7 +45,7 @@ export default function ChatScreen() {
     );
   }
 
-  const subtitle = headerSubtitle(chat, contacts, Date.now());
+  const subtitle = headerSubtitle(chat, contacts, now);
   const send = () => {
     if (!canSend(draft)) return;
     sendMessage(chat.id, draft);

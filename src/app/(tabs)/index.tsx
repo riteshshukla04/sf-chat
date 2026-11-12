@@ -6,6 +6,7 @@ import { SafeAreaView } from 'react-native-safe-area-context';
 
 import { Avatar } from '@/components/avatar';
 import { Spacing, useColors } from '@/constants/theme';
+import { useNow } from '@/hooks/use-now';
 import { formatTime, lastActivityAt, previewText, searchChats, sortChats, type Chat } from '@/lib/chats';
 import { togglePin, useAppState } from '@/state/store';
 
@@ -18,7 +19,7 @@ export default function ChatsScreen() {
   const contacts = useAppState((s) => s.contacts);
   const [query, setQuery] = useState('');
   const shown = useMemo(() => sortChats(searchChats(chats, query)), [chats, query]);
-  const now = Date.now();
+  const now = useNow();
 
   const row = ({ item }: { item: Chat }) => {
     const last = item.messages[item.messages.length - 1];
