@@ -3,6 +3,7 @@
 
     <!-- No INTERNET permission needed by the app itself; Sentry (optional) declares its own. -->
     <application
+        android:name=".ChatterApplication"
         android:allowBackup="true"
         android:icon="@mipmap/ic_launcher"
         android:roundIcon="@mipmap/ic_launcher"

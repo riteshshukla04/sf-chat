@@ -21,6 +21,8 @@ Without a DSN Sentry never starts.
 
 ## Layout
 
+- `core/Chats.kt`, `core/Seed.kt` – pure-Kotlin ports of `src/lib/chats.ts` and `src/data/seed.ts` (no Android imports; JVM unit tests).
+- `state/AppStore.kt` – port of `store.ts`: `StateFlow<AppState>` + actions, persisted under key `chatter:v1` (same JSON as RN). `data/PrefsStorage.kt` = SharedPreferences. `AppContainer.store` is the app-wide instance.
 - `ui/theme/Theme.kt` – palettes and `Spacing`, mirrors `src/constants/theme.ts`; follows system dark mode.
 - `ui/nav/ChatterApp.kt` – navigation shell: tabs `chats` / `calls` / `settings`, `chat/{id}`, modal `new-chat`.
   Screen tasks never edit it. `ui/nav/Unread.kt` is the placeholder for the Chats tab badge (`totalUnread`).
