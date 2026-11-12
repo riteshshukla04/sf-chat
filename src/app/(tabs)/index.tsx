@@ -9,6 +9,9 @@ import { Spacing, useColors } from '@/constants/theme';
 import { formatTime, lastActivityAt, previewText, searchChats, sortChats, type Chat } from '@/lib/chats';
 import { togglePin, useAppState } from '@/state/store';
 
+/** What's new in this update, set when it is published (EXPO_PUBLIC_RELEASE_NOTE, see scripts/publish-update.sh). */
+const RELEASE_NOTE = process.env.EXPO_PUBLIC_RELEASE_NOTE;
+
 export default function ChatsScreen() {
   const c = useColors();
   const chats = useAppState((s) => s.chats);
@@ -59,6 +62,11 @@ export default function ChatsScreen() {
         <Text style={[styles.title, { color: c.accent }]} accessibilityRole="header">
           Chatter
         </Text>
+        {RELEASE_NOTE ? (
+          <Text testID="release-note" style={[styles.note, { color: c.muted }]}>
+            {RELEASE_NOTE}
+          </Text>
+        ) : null}
       </View>
       <View style={[styles.search, { backgroundColor: c.surfaceAlt }]}>
         <MaterialCommunityIcons name="magnify" size={20} color={c.muted} />
@@ -88,6 +96,7 @@ const styles = StyleSheet.create({
   flex: { flex: 1 },
   header: { paddingHorizontal: Spacing.lg, paddingTop: Spacing.sm, paddingBottom: Spacing.sm },
   title: { fontSize: 26, fontWeight: '700' },
+  note: { fontSize: 13, marginTop: 2 },
   search: { flexDirection: 'row', alignItems: 'center', marginHorizontal: Spacing.lg, marginBottom: Spacing.sm, borderRadius: 22, paddingHorizontal: Spacing.md, gap: Spacing.sm },
   searchInput: { flex: 1, paddingVertical: 10, fontSize: 16 },
   row: { flexDirection: 'row', alignItems: 'center', paddingHorizontal: Spacing.lg, paddingVertical: Spacing.md, gap: Spacing.md },
