@@ -102,7 +102,8 @@ export function headerSubtitle(chat: Chat, contacts: Record<string, Contact>, no
     const names = chat.members.map((id) => firstName(contacts[id]?.name ?? 'Someone'));
     // For a group: who is in it, and when the last message came in.
     const last = chat.messages[chat.messages.length - 1];
-    return `${names.join(', ')}, You · last message ${formatTime(last!.sentAt, now)}`;
+    const members = `${names.join(', ')}, You`;
+    return last ? `${members} · last message ${formatTime(last.sentAt, now)}` : members;
   }
   const contact = contacts[chat.members[0]!];
   if (!contact) return '';
