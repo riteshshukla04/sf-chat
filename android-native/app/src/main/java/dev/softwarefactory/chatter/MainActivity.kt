@@ -19,6 +19,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.semantics.testTagsAsResourceId
 import dev.softwarefactory.chatter.state.Clock
+import kotlinx.coroutines.launch
 import dev.softwarefactory.chatter.ui.AppRoot
 import dev.softwarefactory.chatter.ui.NavActions
 
@@ -44,8 +45,16 @@ class MainActivity : ComponentActivity() {
                     }
                 }
             }
+            val scope = rememberCoroutineScope()
             val actions = remember {
-                NavActions(startChat = { store.startChat(it) }, markRead = { store.markRead(it) }, now = { Clock.System.now() })
+                NavActions(
+                    startChat = { store.startChat(it) },
+                    markRead = { store.markRead(it) },
+                    now = { Clock.System.now() },
+                    updateProfile = { n, a -> store.updateProfile(n, a) },
+                    resetChats = { scope.launch { store.resetChats() } },
+                    crashReportingEnabled = app.crash.enabled,
+                )
             }
             // testTag values double as resource-ids (UiAutomator / Maestro), like RN testIDs.
             Box(Modifier.fillMaxSize().semantics { testTagsAsResourceId = true }) {
