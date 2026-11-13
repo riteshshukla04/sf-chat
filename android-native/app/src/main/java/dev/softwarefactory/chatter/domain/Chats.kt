@@ -124,9 +124,7 @@ fun searchChats(chats: List<Chat>, query: String): List<Chat> {
 /**
  * The line under the name in a conversation's header.
  *
- * Deliberate difference from the TypeScript original: for a group with no messages yet the original
- * dereferences `last!.sentAt` and throws (the "Weekend trip" seed chat). Here the "last message" part
- * is simply left out.
+ * A group with no messages yet (the "Weekend trip" seed chat) shows only the members, as in the fixed TypeScript.
  */
 fun headerSubtitle(chat: Chat, contacts: Map<String, Contact>, now: Long, zone: TimeZone = TimeZone.getDefault()): String {
     if (chat.kind == ChatKind.Group) {
