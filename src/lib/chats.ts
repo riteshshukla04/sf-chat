@@ -160,3 +160,8 @@ export function initials(name: string): string {
     .map((part) => part[0]!.toUpperCase());
   return letters.join('') || '?';
 }
+
+/** Contacts sorted by name, as a new array. */
+export function sortContacts(contacts: Record<string, Contact>): Contact[] {
+  return Object.values(contacts).sort((a, b) => a.name.localeCompare(b.name));
+}

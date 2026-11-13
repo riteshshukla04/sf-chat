@@ -1,13 +1,18 @@
 import { router } from 'expo-router';
+import { useMemo } from 'react';
 import { FlatList, Pressable, StyleSheet, Text, View } from 'react-native';
 
 import { Avatar } from '@/components/avatar';
+import { sortContacts } from '@/lib/chats';
 import { Spacing, useColors } from '@/constants/theme';
 import { startChat, useAppState } from '@/state/store';
 
 export default function NewChatScreen() {
   const c = useColors();
-  const contacts = useAppState((s) => Object.values(s.contacts).sort((a, b) => a.name.localeCompare(b.name)));
+  // Select the stable `contacts` object; a selector that builds a new array each call makes
+  // useSyncExternalStore see a changed snapshot every render ("Maximum update depth exceeded").
+  const contactsById = useAppState((s) => s.contacts);
+  const contacts = useMemo(() => sortContacts(contactsById), [contactsById]);
 
   return (
     <FlatList

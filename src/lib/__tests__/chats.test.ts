@@ -10,6 +10,7 @@ import {
   headerSubtitle,
   initials,
   previewText,
+  sortContacts,
   searchChats,
   sortChats,
   totalUnread,
@@ -107,5 +108,15 @@ describe('a conversation', () => {
     expect(initials('Asha Rao')).toBe('AR');
     expect(initials('Weekend trip ⛺')).toBe('WT');
     expect(initials('')).toBe('?');
+  });
+});
+
+describe('sortContacts', () => {
+  const contact = (id: string, name: string): Contact => ({ id, name, about: '', lastSeenAt: null });
+  it('sorts by name without mutating or returning the input', () => {
+    const input = { b: contact('b', 'Zed'), a: contact('a', 'Asha') };
+    const out = sortContacts(input);
+    expect(out.map((c) => c.id)).toEqual(['a', 'b']);
+    expect(Object.keys(input)).toEqual(['b', 'a']);
   });
 });
