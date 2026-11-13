@@ -4,7 +4,7 @@ import { StatusBar } from 'expo-status-bar';
 import { useEffect } from 'react';
 import { Pressable, Text, useColorScheme, View } from 'react-native';
 
-import { Palette } from '@/constants/theme';
+import { Palette, resolveColors } from '@/constants/theme';
 import { captureException, initSentry, wrapRoot } from '@/services/sentry';
 import { hydrate, useAppState } from '@/state/store';
 
@@ -15,7 +15,8 @@ SplashScreen.preventAutoHideAsync().catch(() => {});
 function RootLayout() {
   const scheme = useColorScheme();
   const hydrated = useAppState((s) => s.hydrated);
-  const palette = scheme === 'dark' ? Palette.dark : Palette.light;
+  const themeName = useAppState((s) => s.theme);
+  const palette = resolveColors(scheme, themeName);
 
   useEffect(() => {
     hydrate()

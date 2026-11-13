@@ -9,6 +9,7 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 import { useSyncExternalStore } from 'react';
 
 import { buildSeed, type Call } from '@/data/seed';
+import type { ThemeName } from '@/constants/theme';
 import { advanceStatus, type Chat, type Contact, draftMessage, withMessage } from '@/lib/chats';
 
 export const STORAGE_KEY = 'chatter:v1';
@@ -21,12 +22,13 @@ export interface Profile {
 export interface AppState {
   hydrated: boolean;
   profile: Profile;
+  theme: ThemeName;
   contacts: Record<string, Contact>;
   chats: Chat[];
   calls: Call[];
 }
 
-let state: AppState = { hydrated: false, profile: { name: 'You', about: 'Available' }, contacts: {}, chats: [], calls: [] };
+let state: AppState = { hydrated: false, profile: { name: 'You', about: 'Available' }, theme: 'default', contacts: {}, chats: [], calls: [] };
 const listeners = new Set<() => void>();
 
 function set(next: Partial<AppState>, persist = true): void {
@@ -36,8 +38,8 @@ function set(next: Partial<AppState>, persist = true): void {
 }
 
 async function save(): Promise<void> {
-  const { profile, contacts, chats, calls } = state;
-  await AsyncStorage.setItem(STORAGE_KEY, JSON.stringify({ profile, contacts, chats, calls }));
+  const { profile, theme, contacts, chats, calls } = state;
+  await AsyncStorage.setItem(STORAGE_KEY, JSON.stringify({ profile, theme, contacts, chats, calls }));
 }
 
 export function getState(): AppState {
@@ -58,7 +60,7 @@ export async function hydrate(now = Date.now()): Promise<void> {
   const raw = await AsyncStorage.getItem(STORAGE_KEY);
   const saved = raw ? (JSON.parse(raw) as Omit<AppState, 'hydrated'>) : null;
   const seed = saved ?? { profile: state.profile, ...buildSeed(now) };
-  set({ ...seed, hydrated: true }, !saved);
+  set({ ...seed, theme: saved?.theme === 'forest' ? 'forest' : 'default', hydrated: true }, !saved);
 }
 
 export function chatById(id: string): Chat | undefined {
@@ -126,6 +128,10 @@ export function updateProfile(profile: Partial<Profile>): void {
 }
 
 /** Back to the sample conversations (Settings → Reset chats). */
+export function setTheme(theme: ThemeName): void {
+  set({ theme });
+}
+
 export async function resetChats(now = Date.now()): Promise<void> {
   await AsyncStorage.removeItem(STORAGE_KEY);
   set({ ...buildSeed(now), hydrated: true });
