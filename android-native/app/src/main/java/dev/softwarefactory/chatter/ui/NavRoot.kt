@@ -56,6 +56,9 @@ class NavActions(
     val now: () -> Long,
     val sendMessage: (chatId: String, text: String) -> Unit = { _, _ -> },
     val togglePin: (chatId: String) -> Unit = {},
+    val updateProfile: (name: String, about: String) -> Unit = { _, _ -> },
+    val resetChats: () -> Unit = {},
+    val crashReportingEnabled: Boolean = false,
 )
 
 /** Root: hydration gate (nothing until [AppState.hydrated], an error screen if it failed), then the nav graph. */
@@ -79,6 +82,7 @@ fun NavRoot(state: AppState, actions: NavActions) {
         composable(Routes.Tabs) {
             TabsScaffold(
                 state,
+                actions,
                 onOpenChat = { nav.navigate(Routes.chat(it)) },
                 onNewChat = { nav.navigate(Routes.NewChat) },
                 onTogglePin = actions.togglePin,
@@ -113,7 +117,7 @@ fun NavRoot(state: AppState, actions: NavActions) {
 }
 
 @Composable
-private fun TabsScaffold(state: AppState, onOpenChat: (String) -> Unit, onNewChat: () -> Unit, onTogglePin: (String) -> Unit, now: Long) {
+private fun TabsScaffold(state: AppState, actions: NavActions, onOpenChat: (String) -> Unit, onNewChat: () -> Unit, onTogglePin: (String) -> Unit, now: Long) {
     var selected by rememberSaveable { mutableStateOf(Tab.Chats) }
     val unread = totalUnread(state.chats)
     val c = ChatterTheme.colors
@@ -149,8 +153,13 @@ private fun TabsScaffold(state: AppState, onOpenChat: (String) -> Unit, onNewCha
         Box(Modifier.padding(padding).statusBarsPadding()) {
             when (selected) {
                 Tab.Chats -> ChatsListScreen(state, onOpenChat = { onOpenChat(it.id) }, onNewChat = onNewChat, onTogglePin = onTogglePin, now = now)
-                Tab.Calls -> CallsScreen(state)
-                Tab.Settings -> SettingsScreen(state)
+                Tab.Calls -> CallsScreen(state, now)
+                Tab.Settings -> SettingsScreen(
+                    state,
+                    crashReportingEnabled = actions.crashReportingEnabled,
+                    onUpdateProfile = actions.updateProfile,
+                    onResetChats = actions.resetChats,
+                )
             }
         }
     }
