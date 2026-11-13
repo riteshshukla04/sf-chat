@@ -66,7 +66,7 @@ struct ConversationScreen: View {
 
     private func header(_ chat: Chat) -> some View {
         HStack(spacing: CGFloat(Spacing.sm)) {
-            avatar(chat)
+            AvatarView(name: chat.title, size: 36, group: chat.kind == .group)
             VStack(alignment: .leading, spacing: 0) {
                 Text(chat.title).font(.system(size: 17, weight: .semibold)).foregroundColor(c.text).lineLimit(1)
                 Text(ConversationViewModel.subtitle(chat: chat, contacts: model.state.contacts, now: now))
@@ -74,19 +74,6 @@ struct ConversationScreen: View {
                     .accessibilityIdentifier(TestID.chatSubtitle)
             }
         }
-    }
-
-    private func avatar(_ chat: Chat) -> some View {
-        ZStack {
-            Circle().fill(c.accent)
-            if chat.kind == .group {
-                Image(systemName: "person.2.fill").font(.system(size: 16)).foregroundColor(c.onAccent)
-            } else {
-                Text(initials(chat.title)).font(.system(size: 14, weight: .semibold)).foregroundColor(c.onAccent)
-            }
-        }
-        .frame(width: 36, height: 36)
-        .accessibilityHidden(true)
     }
 
     @ViewBuilder private func rowView(_ row: ConversationRow) -> some View {
