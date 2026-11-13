@@ -1,0 +1,11 @@
+import { Palette } from '../../constants/theme';
+
+const rgb = (hex: string) => [1, 3, 5].map((i) => parseInt(hex.slice(i, i + 2), 16));
+
+describe('Palette accent (button colour)', () => {
+  it.each(['light', 'dark'] as const)('%s accent is blue', (scheme) => {
+    const [r, g, b] = rgb(Palette[scheme].accent);
+    expect(b).toBeGreaterThan(g);
+    expect(b).toBeGreaterThan(r);
+  });
+});
