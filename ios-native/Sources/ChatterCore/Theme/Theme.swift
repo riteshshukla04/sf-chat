@@ -10,11 +10,11 @@ public enum Palette {
     public static let light = Colors(
         background: "#FFFFFF", surface: "#FFFFFF", surfaceAlt: "#F2F4F3", chatBackground: "#EFEAE2",
         text: "#111B21", muted: "#667781", border: "#E4E8E6", accent: "#1A73E8", accentStrong: "#1557B0",
-        onAccent: "#FFFFFF", bubbleMine: "#D7F5DE", bubbleTheirs: "#FFFFFF", tickRead: "#2E9BF0", danger: "#C9302C")
+        onAccent: "#FFFFFF", bubbleMine: "#D6E8FF", bubbleTheirs: "#FFFFFF", tickRead: "#2E9BF0", danger: "#C9302C")
     public static let dark = Colors(
         background: "#0B141A", surface: "#111B21", surfaceAlt: "#1F2C34", chatBackground: "#0B141A",
         text: "#E9EDEF", muted: "#8696A0", border: "#22303A", accent: "#4C9AFF", accentStrong: "#1A73E8",
-        onAccent: "#0B141A", bubbleMine: "#0F5E44", bubbleTheirs: "#1F2C34", tickRead: "#53BDEB", danger: "#FF6B66")
+        onAccent: "#0B141A", bubbleMine: "#1B4F8F", bubbleTheirs: "#1F2C34", tickRead: "#53BDEB", danger: "#FF6B66")
 }
 
 public enum Spacing {
