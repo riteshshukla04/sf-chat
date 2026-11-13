@@ -51,6 +51,7 @@ class MainActivity : ComponentActivity() {
                     startChat = { store.startChat(it) },
                     markRead = { store.markRead(it) },
                     now = { Clock.System.now() },
+                    sendMessage = { id, text -> store.sendMessage(id, text) },
                     updateProfile = { n, a -> store.updateProfile(n, a) },
                     resetChats = { scope.launch { store.resetChats() } },
                     togglePin = { store.togglePin(it) },
