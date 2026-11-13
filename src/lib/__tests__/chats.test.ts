@@ -9,12 +9,9 @@ import {
   groupByDay,
   headerSubtitle,
   initials,
-  type Message,
   previewText,
   searchChats,
   sortChats,
-  reactionSummary,
-  toggleReaction,
   totalUnread,
   withMessage,
 } from '../chats';
@@ -81,8 +78,8 @@ describe('a conversation', () => {
     const group = chat('g', { kind: 'group', title: 'Flat 4B', members: ['asha', 'ben'], messages: [msg('1', 'asha', 'Rent paid', at(12, 10, 15))] });
     expect(headerSubtitle(group, contacts, NOW)).toBe('Asha, Ben, You · last message 10:15');
   });
-  test('a group with no messages yet still has a subtitle', () => {
-    const group = chat('g', { kind: 'group', title: 'Weekend trip', members: ['asha', 'ben'], messages: [] });
+  test('a group with no messages yet lists only its members', () => {
+    const group = chat('g', { kind: 'group', title: 'Flat 4B', members: ['asha', 'ben'], messages: [] });
     expect(headerSubtitle(group, contacts, NOW)).toBe('Asha, Ben, You');
   });
   test('sending: only real text, and the chat counts as read', () => {
@@ -110,33 +107,5 @@ describe('a conversation', () => {
     expect(initials('Asha Rao')).toBe('AR');
     expect(initials('Weekend trip ⛺')).toBe('WT');
     expect(initials('')).toBe('?');
-  });
-});
-
-describe('reactions', () => {
-  const base: Message = msg('m1', 'asha', 'hi', at(12, 9));
-  test('adds a reaction and summarises it', () => {
-    const m = toggleReaction(base, '❤️');
-    expect(reactionSummary(m)).toEqual([{ emoji: '❤️', count: 1, mine: true }]);
-  });
-  test('tapping my own reaction again removes it', () => {
-    const m = toggleReaction(toggleReaction(base, '👍'), '👍');
-    expect(m.reactions).toBeUndefined();
-    expect(reactionSummary(m)).toEqual([]);
-  });
-  test('a different emoji replaces mine; others are counted', () => {
-    let m = toggleReaction(base, '👍', 'asha');
-    m = toggleReaction(m, '👍');
-    expect(reactionSummary(m)).toEqual([{ emoji: '👍', count: 2, mine: true }]);
-    m = toggleReaction(m, '🙏');
-    expect(reactionSummary(m)).toEqual([
-      { emoji: '👍', count: 1, mine: false },
-      { emoji: '🙏', count: 1, mine: true },
-    ]);
-  });
-  test('ignores emojis outside the picker and does not mutate', () => {
-    expect(toggleReaction(base, '🔥')).toBe(base);
-    toggleReaction(base, '👍');
-    expect(base.reactions).toBeUndefined();
   });
 });

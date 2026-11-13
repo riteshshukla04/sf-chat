@@ -54,6 +54,7 @@ class MainActivity : ComponentActivity() {
                     updateProfile = { n, a -> store.updateProfile(n, a) },
                     resetChats = { scope.launch { store.resetChats() } },
                     crashReportingEnabled = app.crash.enabled,
+                    togglePin = { store.togglePin(it) },
                 )
             }
             // testTag values double as resource-ids (UiAutomator / Maestro), like RN testIDs.
