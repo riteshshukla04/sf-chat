@@ -54,6 +54,7 @@ class NavActions(
     val startChat: (contactId: String) -> String,
     val markRead: (chatId: String) -> Unit,
     val now: () -> Long,
+    val sendMessage: (chatId: String, text: String) -> Unit = { _, _ -> },
 )
 
 /** Root: hydration gate (nothing until [AppState.hydrated], an error screen if it failed), then the nav graph. */
@@ -83,7 +84,10 @@ fun NavRoot(state: AppState, actions: NavActions) {
         }
         composable(Routes.Chat, arguments = listOf(navArgument("id") { type = NavType.StringType })) { entry ->
             val id = entry.arguments?.getString("id").orEmpty()
-            Box(Modifier.safeDrawingPadding()) { ConversationScreen(id, state, actions.now(), onBack = { nav.popBackStack() }) }
+            Box(Modifier.safeDrawingPadding()) { ConversationScreen(
+                    id, state, actions.now(), onBack = { nav.popBackStack() },
+                    onMarkRead = actions.markRead, onSend = actions.sendMessage,
+                ) }
         }
         composable(
             Routes.NewChat,
