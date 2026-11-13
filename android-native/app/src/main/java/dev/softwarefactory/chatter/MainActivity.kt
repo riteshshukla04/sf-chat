@@ -46,7 +46,7 @@ class MainActivity : ComponentActivity() {
             }
             val actions = remember {
                 NavActions(startChat = { store.startChat(it) }, markRead = { store.markRead(it) }, now = { Clock.System.now() },
-                    sendMessage = { id, text -> store.sendMessage(id, text) })
+                    sendMessage = { id, text -> store.sendMessage(id, text) }, togglePin = { store.togglePin(it) })
             }
             // testTag values double as resource-ids (UiAutomator / Maestro), like RN testIDs.
             Box(Modifier.fillMaxSize().semantics { testTagsAsResourceId = true }) {
