@@ -1,0 +1,5 @@
+Chatter.xcodeproj/
+Chatter/Info.plist
+build/
+DerivedData/
+.build/

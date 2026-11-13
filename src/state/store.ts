@@ -9,7 +9,7 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 import { useSyncExternalStore } from 'react';
 
 import { buildSeed, type Call } from '@/data/seed';
-import { advanceStatus, type Chat, type Contact, draftMessage, withMessage } from '@/lib/chats';
+import { advanceStatus, type Chat, type Contact, draftMessage, toggleReaction, withMessage } from '@/lib/chats';
 
 export const STORAGE_KEY = 'chatter:v1';
 
@@ -114,6 +114,13 @@ export function startChat(contactId: string, now = Date.now()): string {
   const chat: Chat = { id: newId('chat'), kind: 'direct', title: contact?.name ?? 'Chat', members: [contactId], messages: [], unread: 0, pinned: false, muted: false, createdAt: now };
   set({ chats: [chat, ...state.chats] });
   return chat.id;
+}
+
+/** Adds, switches or removes my reaction on a message; saved with the chat. */
+export function reactToMessage(chatId: string, messageId: string, emoji: string): void {
+  const chat = chatById(chatId);
+  if (!chat) return;
+  replaceChat({ ...chat, messages: chat.messages.map((m) => (m.id === messageId ? toggleReaction(m, emoji) : m)) });
 }
 
 export function togglePin(chatId: string): void {
