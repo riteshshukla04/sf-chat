@@ -13,6 +13,15 @@ npm test                  # jest (src/lib/__tests__)
 npx tsc --noEmit
 ```
 
+## Testing
+
+Unit tests run with Jest (`"test": "jest"` in `package.json`) and live in `src/lib/__tests__`:
+
+```bash
+npm ci      # once, to install dependencies
+npm test
+```
+
 ## Build an APK for a phone
 
 ```bash
