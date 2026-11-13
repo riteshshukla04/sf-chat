@@ -54,6 +54,7 @@ class NavActions(
     val startChat: (contactId: String) -> String,
     val markRead: (chatId: String) -> Unit,
     val now: () -> Long,
+    val sendMessage: (chatId: String, text: String) -> Unit = { _, _ -> },
     val togglePin: (chatId: String) -> Unit = {},
     val updateProfile: (name: String, about: String) -> Unit = { _, _ -> },
     val resetChats: () -> Unit = {},
@@ -90,7 +91,10 @@ fun NavRoot(state: AppState, actions: NavActions) {
         }
         composable(Routes.Chat, arguments = listOf(navArgument("id") { type = NavType.StringType })) { entry ->
             val id = entry.arguments?.getString("id").orEmpty()
-            Box(Modifier.safeDrawingPadding()) { ConversationScreen(id, state, actions.now(), onBack = { nav.popBackStack() }) }
+            Box(Modifier.safeDrawingPadding()) { ConversationScreen(
+                    id, state, actions.now(), onBack = { nav.popBackStack() },
+                    onMarkRead = actions.markRead, onSend = actions.sendMessage,
+                ) }
         }
         composable(
             Routes.NewChat,
