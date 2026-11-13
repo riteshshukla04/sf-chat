@@ -54,6 +54,7 @@ class NavActions(
     val startChat: (contactId: String) -> String,
     val markRead: (chatId: String) -> Unit,
     val now: () -> Long,
+    val togglePin: (chatId: String) -> Unit = {},
 )
 
 /** Root: hydration gate (nothing until [AppState.hydrated], an error screen if it failed), then the nav graph. */
@@ -79,6 +80,8 @@ fun NavRoot(state: AppState, actions: NavActions) {
                 state,
                 onOpenChat = { nav.navigate(Routes.chat(it)) },
                 onNewChat = { nav.navigate(Routes.NewChat) },
+                onTogglePin = actions.togglePin,
+                now = actions.now(),
             )
         }
         composable(Routes.Chat, arguments = listOf(navArgument("id") { type = NavType.StringType })) { entry ->
@@ -106,7 +109,7 @@ fun NavRoot(state: AppState, actions: NavActions) {
 }
 
 @Composable
-private fun TabsScaffold(state: AppState, onOpenChat: (String) -> Unit, onNewChat: () -> Unit) {
+private fun TabsScaffold(state: AppState, onOpenChat: (String) -> Unit, onNewChat: () -> Unit, onTogglePin: (String) -> Unit, now: Long) {
     var selected by rememberSaveable { mutableStateOf(Tab.Chats) }
     val unread = totalUnread(state.chats)
     val c = ChatterTheme.colors
@@ -141,7 +144,7 @@ private fun TabsScaffold(state: AppState, onOpenChat: (String) -> Unit, onNewCha
     ) { padding ->
         Box(Modifier.padding(padding).statusBarsPadding()) {
             when (selected) {
-                Tab.Chats -> ChatsListScreen(state, onOpenChat = { onOpenChat(it.id) }, onNewChat = onNewChat)
+                Tab.Chats -> ChatsListScreen(state, onOpenChat = { onOpenChat(it.id) }, onNewChat = onNewChat, onTogglePin = onTogglePin, now = now)
                 Tab.Calls -> CallsScreen(state)
                 Tab.Settings -> SettingsScreen(state)
             }
