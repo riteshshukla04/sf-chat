@@ -118,7 +118,7 @@ final class ChatsTests: XCTestCase {
     }
 
     func testPaletteAndSpacingMatchTheRNTheme() {
-        XCTAssertEqual(Palette.light.accent, "#128C5E")
+        XCTAssertEqual(Palette.light.accent, "#1A73E8")
         XCTAssertEqual(Palette.dark.bubbleMine, "#0F5E44")
         XCTAssertEqual(Palette.dark.danger, "#FF6B66")
         XCTAssertEqual([Spacing.xs, Spacing.sm, Spacing.md, Spacing.lg, Spacing.xl], [4, 8, 12, 16, 24])
