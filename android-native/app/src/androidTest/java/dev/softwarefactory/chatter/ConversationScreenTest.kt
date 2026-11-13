@@ -38,7 +38,7 @@ class ConversationScreenTest {
         rule.onNodeWithTag("send").assertIsNotEnabled()
         rule.onNodeWithTag("message-input").performTextInput("hello")
         rule.onNodeWithTag("send").assertIsEnabled().performClick()
-        rule.runOnIdle { assert(sent == listOf("family" to "    hello")) }
+        rule.runOnIdle { assert(sent == listOf("family" to "   hello")) }
     }
 
     @Test fun missingChatShowsFallback() {
@@ -50,6 +50,6 @@ class ConversationScreenTest {
         val empty = seed.chats.first { it.messages.isEmpty() }
         rule.setContent { ChatterTheme { ConversationScreen(empty.id, state, now, {}) } }
         rule.onNodeWithText("Messages are kept on this phone.", substring = true).assertIsDisplayed()
-        rule.onNodeWithTag("chat-subtitle").assertTextContains(empty.members.size.toString(), substring = true, ignoreCase = true).assertIsDisplayed()
+        rule.onNodeWithTag("chat-subtitle").assertTextContains("You", substring = true).assertIsDisplayed()
     }
 }

@@ -14,6 +14,7 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.widthIn
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.BasicTextField
@@ -85,11 +86,16 @@ fun ConversationScreen(
     var draft by rememberSaveable(chatId) { mutableStateOf("") }
     val rows = remember(chat, state.contacts, now) { conversationRows(chat, state.contacts, now) }
     val sendable = canSend(draft)
+    val listState = rememberLazyListState()
+    // Keep the newest message in view: when a message is added (mine or a reply), jump to the bottom (index 0 in the reversed list).
+    val newestId = chat.messages.lastOrNull()?.id
+    LaunchedEffect(newestId) { if (newestId != null) listState.animateScrollToItem(0) }
 
     Column(Modifier.fillMaxSize().background(c.chatBackground).imePadding().testTag("chat-screen")) {
         Header(chat, headerSubtitle(chat, state.contacts, now), onBack)
         LazyColumn(
             modifier = Modifier.weight(1f).fillMaxWidth(),
+            state = listState,
             reverseLayout = true, // newest at the bottom
             contentPadding = androidx.compose.foundation.layout.PaddingValues(Spacing.md),
             verticalArrangement = Arrangement.spacedBy(6.dp),
