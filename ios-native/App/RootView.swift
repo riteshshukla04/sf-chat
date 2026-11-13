@@ -24,29 +24,3 @@ struct RootView: View {
         .onAppear { if !model.state.hydrated { model.store.hydrate() } }
     }
 }
-
-/// RN's root ErrorBoundary screen. Nothing renders it yet (SwiftUI has no render-error boundary);
-/// screens that can fail show it with a retry action.
-struct ErrorScreen: View {
-    @Environment(\.colors) private var c
-    let message: String
-    let retry: () -> Void
-
-    var body: some View {
-        VStack(alignment: .leading, spacing: CGFloat(Spacing.md)) {
-            Text("Something went wrong").font(.system(size: 22, weight: .bold)).foregroundColor(c.text)
-            Text(message).foregroundColor(c.text).accessibilityIdentifier(TestID.errorMessage)
-            Button(action: retry) {
-                Text("Try again").fontWeight(.semibold).foregroundColor(.white)
-                    .frame(maxWidth: .infinity).padding(14)
-                    .background(c.accent).cornerRadius(10)
-            }
-            .accessibilityIdentifier(TestID.errorRetry)
-        }
-        .padding(CGFloat(Spacing.xl))
-        .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .center)
-        .background(Color(hex: Palette.light.background))
-        .accessibilityIdentifier(TestID.errorScreen)
-    }
-}
-
