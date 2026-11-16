@@ -89,6 +89,17 @@ export function totalUnread(chats: Chat[]): number {
   return chats.filter((c) => !c.muted).reduce((sum, c) => sum + c.unread, 0);
 }
 
+/** Number of chats (muted or not) that have unread messages. */
+export function unreadChatCount(chats: Chat[]): number {
+  return chats.filter((c) => c.unread > 0).length;
+}
+
+/** The Chats screen title: "Chats (3)", or just "Chats" when nothing is unread. */
+export function chatsTitle(chats: Chat[]): string {
+  const n = unreadChatCount(chats);
+  return n > 0 ? `Chats (${n})` : 'Chats';
+}
+
 /** Chats whose title, or any message, contains the query (case-insensitive). */
 export function searchChats(chats: Chat[], query: string): Chat[] {
   const q = query.trim().toLowerCase();

@@ -1,6 +1,7 @@
 import {
   advanceStatus,
   canSend,
+  chatsTitle,
   type Chat,
   type Contact,
   dayLabel,
@@ -118,5 +119,15 @@ describe('sortContacts', () => {
     const out = sortContacts(input);
     expect(out.map((c) => c.id)).toEqual(['a', 'b']);
     expect(Object.keys(input)).toEqual(['b', 'a']);
+  });
+});
+
+describe('the chats title', () => {
+  test('is plain "Chats" when nothing is unread', () => {
+    expect(chatsTitle([])).toBe('Chats');
+    expect(chatsTitle([chat('a'), chat('b')])).toBe('Chats');
+  });
+  test('counts chats with unread messages, not messages', () => {
+    expect(chatsTitle([chat('a', { unread: 5 }), chat('b'), chat('c', { unread: 1 }), chat('d', { unread: 2, muted: true })])).toBe('Chats (3)');
   });
 });

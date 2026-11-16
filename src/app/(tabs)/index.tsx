@@ -6,7 +6,7 @@ import { SafeAreaView } from 'react-native-safe-area-context';
 
 import { Avatar } from '@/components/avatar';
 import { Spacing, useColors } from '@/constants/theme';
-import { formatTime, lastActivityAt, previewText, searchChats, sortChats, type Chat } from '@/lib/chats';
+import { chatsTitle, formatTime, lastActivityAt, previewText, searchChats, sortChats, type Chat } from '@/lib/chats';
 import { togglePin, useAppState } from '@/state/store';
 
 /** What's new in this update, set when it is published (EXPO_PUBLIC_RELEASE_NOTE, see scripts/publish-update.sh). */
@@ -60,7 +60,7 @@ export default function ChatsScreen() {
     <SafeAreaView edges={['top']} style={[styles.flex, { backgroundColor: c.surface }]} testID="chats-screen">
       <View style={styles.header}>
         <Text style={[styles.title, { color: c.accent }]} accessibilityRole="header">
-          Chatter
+          {chatsTitle(chats)}
         </Text>
         {RELEASE_NOTE ? (
           <Text testID="release-note" style={[styles.note, { color: c.muted }]}>
